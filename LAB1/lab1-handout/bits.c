@@ -201,6 +201,7 @@ int byteXor(int x, int y, int n) {
   int mask = 0xff << (n<<3);
   x &= mask;
   y &= mask;
+  return !!(x^y);
   // return (x ^ y) >> n;
   // return ((x ^ y) >> n) & 1;
 }
@@ -211,9 +212,7 @@ int byteXor(int x, int y, int n) {
  *   Rating: 3 
  */
 int logicalAnd(int x, int y) {
-  
-  
-  return 2;
+  return (!!x) & (!!y);
 }
 /* 
  *   logicalOr - x || y
@@ -222,7 +221,7 @@ int logicalAnd(int x, int y) {
  *   Rating: 3 
  */
 int logicalOr(int x, int y) {
-  return 2;
+  return (!!x) | (!!y);
 }
 /* 
  * rotateLeft - Rotate x to the left by n
@@ -233,7 +232,11 @@ int logicalOr(int x, int y) {
  *   Rating: 3 
  */
 int rotateLeft(int x, int n) {
-  return 2;
+  /*刚开始没有意识到好像>>这个不是单纯的逻辑右移*/
+  int left = x << n;
+  int rightmask = ~((~0)<<n);
+  int right = x >> (32+~n+1);
+  return left ^ (right&rightmask);
 }
 /*
  * parityCheck - returns 1 if x contains an odd number of 1's
@@ -243,7 +246,16 @@ int rotateLeft(int x, int n) {
  *   Rating: 4
  */
 int parityCheck(int x) {
-  return 2;
+  // 这道题真是费了段时间来思考，不知道有没有更加简单的方法
+  x = (x << 16) ^ x;
+  x = (x << 8) ^ x;
+  x = (x << 4) ^ x;
+  x = (x << 2) ^ x;
+  x = (x << 1) ^ x;
+  x = x & 1<<31;
+  return !!x;
+  // return 2;
+
 }
 /*
  * mul2OK - Determine if can compute 2*x without overflow
@@ -269,7 +281,13 @@ int mul2OK(int x) {
  *   Rating: 2
  */
 int mult3div2(int x) {
-  return 2;
+  // return (x&(1<<31)) ^ (((x>>1) + x) & ~(1<<31));
+  // return (x&(1<<31)) ^ ((((x + x + x)>>1)) & ~(1<<31));
+  x = x + (x << 1);
+
+  x = (x >> 1) + (((x >> 31) & 0x1) & (((x << 31) >> 31) & 0x1));
+
+  return x;
 }
 /* 
  * subOK - Determine if can compute x-y without overflow
@@ -280,6 +298,7 @@ int mult3div2(int x) {
  *   Rating: 3
  */
 int subOK(int x, int y) {
+
   return 2;
 }
 /* 

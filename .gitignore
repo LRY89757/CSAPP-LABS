@@ -54,6 +54,9 @@ dkms.conf
 # config files
 .vscode/
 
+# Refer
+Reference/
+
 # Executable files
 LAB1/lab1-handout/btest
 LAB1/lab1-handout/fshow

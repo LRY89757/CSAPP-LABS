@@ -171,7 +171,9 @@ NOTES:
  *   Rating: 1
  */
 int lsbZero(int x) {
-  return 2;
+  // 本来想用与操作，但是后来想到不允许使用大整数就放弃了，实际上后来想想异或似乎也行
+  return x>>1<<1;
+  // return x ^ 1;
 }
 /* 
  * byteNot - bit-inversion to byte n from word x  
@@ -182,7 +184,8 @@ int lsbZero(int x) {
  *   Rating: 2
  */
 int byteNot(int x, int n) {
-  return 2;
+  int mask = 0xFF<<(n<<3);  // 将0xFF移到对应的位置
+  return x ^ mask;
 }
 /* 
  *   byteXor - compare the nth byte of x and y, if it is same, return 0, if not, return 1
@@ -195,7 +198,11 @@ int byteNot(int x, int n) {
  *   Rating: 2 
  */
 int byteXor(int x, int y, int n) {
-  return 2;
+  int mask = 0xff << (n<<3);
+  x &= mask;
+  y &= mask;
+  // return (x ^ y) >> n;
+  // return ((x ^ y) >> n) & 1;
 }
 /* 
  *   logicalAnd - x && y
@@ -204,6 +211,8 @@ int byteXor(int x, int y, int n) {
  *   Rating: 3 
  */
 int logicalAnd(int x, int y) {
+  
+  
   return 2;
 }
 /* 

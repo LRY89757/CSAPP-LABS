@@ -3,6 +3,7 @@ Our Computer System homework, about 3 labs
 
 * language: C
 * environment: Linux
+* reference codes: https://github.com/Sorosliu1029/CSAPP-Labs/tree/master/data-lab
 
 
 

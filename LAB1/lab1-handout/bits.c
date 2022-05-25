@@ -267,7 +267,11 @@ int parityCheck(int x) {
  *   Rating: 2
  */
 int mul2OK(int x) {
-  return 2;
+  // 感觉就是判断最高的那两位是否相等? 
+  // 太天真了。。 也可能是64位机器的问题。
+  int a = (x>>31)&0x1;
+  int b = (x>>30)&0x1;
+  return !(a ^ b);
 }
 /*
  * mult3div2 - multiplies by 3/2 rounding toward 0,
@@ -285,8 +289,9 @@ int mult3div2(int x) {
   // return (x&(1<<31)) ^ ((((x + x + x)>>1)) & ~(1<<31));
   x = x + (x << 1);
 
-  x = (x >> 1) + (((x >> 31) & 0x1) & (((x << 31) >> 31) & 0x1));
-
+  // x = (x >> 1) + (((x >> 31) & 0x1) & (((x << 31) >> 31) & 0x1));
+  // 有点奇怪为啥非要加这个1?
+  x = (x >> 1) + (((x >> 31) & 0x1) & (x & 0x1));  // 这样干也行
   return x;
 }
 /* 
@@ -298,8 +303,10 @@ int mult3div2(int x) {
  *   Rating: 3
  */
 int subOK(int x, int y) {
-
-  return 2;
+  // 如果符号相同不可能会溢出，但是如果符号不相同很可能会溢出，这个需要判断加和后
+  // 最高位是否和之前的符号相同,即相减后结果最高位是否和被减数相同。
+  int ans = x + ~y + 1;
+  return !(((1<<31)&x)^((1<<31)&y)) | !(((1<<31)&x)^((1<<31)&ans));
 }
 /* 
  * absVal - absolute value of x
@@ -310,7 +317,18 @@ int subOK(int x, int y) {
  *   Rating: 4
  */
 int absVal(int x) {
-  return 2;
+  // // 只考虑了负数的情况
+  // int mask = 1 << 31;
+  // mask = ~mask;
+  // return mask & ~(x+~1+1); 
+  
+  // 参考https://github.com/javaknight1/Manipulating-Bits/blob/master/bits.c
+  int mask, ret;
+  mask = x >> 31;
+  // 理解关键是对于负数补码的变回原码到底是怎么的一个过程。
+  ret = x + mask;   // 减一(对于负数)
+  ret = ret ^ mask; // 取反（对于负数)
+  return ret;
 }
 /* 
  * float_abs - Return bit-level equivalent of absolute value of f for

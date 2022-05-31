@@ -342,7 +342,20 @@ int absVal(int x) {
  *   Rating: 2
  */
 unsigned float_abs(unsigned uf) {
-  return 2;
+  // unsigned u = (uf & ~(1<<31));
+  // if(u>>23 > 0xfe)
+  //   return uf;
+  // return u;
+  // unsigned m = 0x7FFFFFFF;
+  unsigned m = ~(1<<31);
+  unsigned abs = m & uf;
+  // unsigned nan = 0x7F800001;
+  unsigned nan = 0xff<<23 | 0x1;
+  if (abs >= nan) {
+    return uf;
+  } else {
+    return abs;
+  }
 }
 /* 
  * float_f2i - Return bit-level equivalent of expression (int) f
@@ -357,5 +370,24 @@ unsigned float_abs(unsigned uf) {
  *   Rating: 4
  */
 int float_f2i(unsigned uf) {
-  return 2;
+  // get E, M, sign part of float bit representation
+  int E = (uf >> 23) & 0xFF;
+  // int M = uf & 0x7FFFFF;
+  int M = uf & ((~(1<<31))>>8);
+  // int sign = uf & 0x80000000;
+  int sign = uf & (1<<31);
+
+  // if E < 127, E-bias = E - 127 < 0, which means uf is (+-)0.xxxx, leading to int 0
+  if (E < 127) {
+    return 0;
+  }
+  // if E > 157, E-bias = E - 127 > 30, which means `out of range`
+  if (E > 157) {
+    // return 0x80000000;
+    return 1<<31;
+  }
+
+  // result is 1.xxxx * 2^(E-127), so use the shift operation
+  // but take care of sign bit
+  return (sign | (1 << 30) | (M << 7)) >> (157 - E);
 }

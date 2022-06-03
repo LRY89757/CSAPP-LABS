@@ -62,6 +62,19 @@ Wow! Brazil is big.
 ```
 调试过程如下：
 首先通过`objdump -d bomb -M intel | less > intel_asm.asm`来得到我们程序的intel格式的反汇编，然后首先寻找main函数中的phase_1，找到后:
+![image](https://user-images.githubusercontent.com/77330637/171866841-836e485f-d84c-4a4d-88c4-843af6d10962.png)
+而后我们可以明显发现前面调用`readline()`函数来获取的字符串首地址应该是传入了eax中，然后堆栈esp用来传参将eax的首地址传了进去。
+接着我们继续查找phase_1函数的定义：
+![image](https://user-images.githubusercontent.com/77330637/171867595-eed00b77-1c18-4cec-b741-d8f3d3f93ceb.png)
+找到phase_1后我们可以发现这里将两个地址入了栈作为新的函数`string_not_equal（）`的参数，分别是地址`0x804a004`和我们之前的esp堆栈中存储的eax，也就是readline读入的我们输入的字串，之后开始判断是否两字串相等，从这里我们就可以判断出我们目标字符串的首址就是`0x804a004`.所以接下来就只需要在使用gdb进行调试的过程中查看该首址往后的内容即可。
+
+
+
+
+
+
+
+
 
 
 

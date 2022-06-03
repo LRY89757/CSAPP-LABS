@@ -72,7 +72,27 @@ Wow! Brazil is big.
 <br>
 找到phase_1后我们可以发现这里将两个地址入了栈作为新的函数`string_not_equal（）`的参数，分别是地址`0x804a004`和我们之前的esp堆栈中存储的eax，也就是readline读入的我们输入的字串，之后开始判断是否两字串相等，从这里我们就可以判断出我们目标字符串的首址就是`0x804a004`.所以接下来就只需要在使用gdb进行调试的过程中查看该首址往后的内容即可。
 
-
+首先我们打开gdb对bomb进行调试：
+<br>
+![image](https://user-images.githubusercontent.com/77330637/171869229-17ea5cbe-8c08-4366-a650-1fb977833173.png)
+<br>
+而后设断点`b main` 开始启动程序`r`，并一直单步调试`ni`至`phase_1(input)`，此时输入我们对应的查看首址内容命令`x/20x 0x804a004`可以看到对应的地址内容
+<br>
+![image](https://user-images.githubusercontent.com/77330637/171869102-9b7536a6-59ad-46d1-9369-87a9c923309f.png)
+<br>
+到0x0000为止从而我们确定是这么几个数：
+```sh
+0x804a004:      0x21776f57      0x61724220      0x206c697a      0x62207369
+0x804a014:      0x002e6769      0x00000000
+```
+然后我自己写了个python的翻译脚本用来翻译这几块内容：
+<br>
+![image](https://user-images.githubusercontent.com/77330637/171869728-790a504b-e7e4-4b09-ad15-ec41ffe12346.png)
+<br>
+经过翻译可得结果为：
+<br>
+![image](https://user-images.githubusercontent.com/77330637/171869825-c01ee3f9-a20a-4eb9-bd38-a725be721e55.png)
+<br>
 
 
 

@@ -374,15 +374,17 @@ Disassembly of section .text:
  8048b54:	56                   	push   esi
  8048b55:	53                   	push   ebx
  8048b56:	83 ec 2c             	sub    esp,0x2c
- 8048b59:	65 a1 14 00 00 00    	mov    eax,gs:0x14
- 8048b5f:	89 44 24 24          	mov    DWORD PTR [esp+0x24],eax
+ 8048b59:	65 a1 14 00 00 00    	mov    eax,gs:0x14 ; 全局段寄存器https://www.coisme.com/archives/805.html
+ 8048b5f:	89 44 24 24          	mov    DWORD PTR [esp+0x24],eax ; 为什么中间要空8个字节？
  8048b63:	31 c0                	xor    eax,eax
  8048b65:	8d 44 24 0c          	lea    eax,[esp+0xc]
  8048b69:	50                   	push   eax
  8048b6a:	ff 74 24 3c          	push   DWORD PTR [esp+0x3c]
- 8048b6e:	e8 a0 05 00 00       	call   8049113 <read_six_numbers>
+ 8048b6e:	e8 a0 05 00 00       	call   8049113 <read_six_numbers> ; 注意这里调用完call会有一个双字，
+ 																	  ; 也就是这条指令的下一条指令放到ESP中，
+																	  ; 等到调用的子程序ret后才将该双字弹出
  8048b73:	83 c4 10             	add    esp,0x10
- 8048b76:	83 7c 24 04 01       	cmp    DWORD PTR [esp+0x4],0x1
+ 8048b76:	83 7c 24 04 01       	cmp    DWORD PTR [esp+0x4],0x1  ; 可以看出首先是和0x1进行比较
  8048b7b:	74 05                	je     8048b82 <phase_2+0x2e>
  8048b7d:	e8 6c 05 00 00       	call   80490ee <explode_bomb>
  8048b82:	8d 5c 24 04          	lea    ebx,[esp+0x4]
@@ -861,8 +863,8 @@ Disassembly of section .text:
  804910e:	e8 cd f6 ff ff       	call   80487e0 <exit@plt>
 
 08049113 <read_six_numbers>:
- 8049113:	83 ec 0c             	sub    esp,0xc
- 8049116:	8b 44 24 14          	mov    eax,DWORD PTR [esp+0x14]
+ 8049113:	83 ec 0c             	sub    esp,0xc ; 又空出12个字节
+ 8049116:	8b 44 24 14          	mov    eax,DWORD PTR [esp+0x14] ; 
  804911a:	8d 50 14             	lea    edx,[eax+0x14]
  804911d:	52                   	push   edx
  804911e:	8d 50 10             	lea    edx,[eax+0x10]

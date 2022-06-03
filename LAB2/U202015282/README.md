@@ -5,6 +5,7 @@ This is bomb 202015282.
 It belongs to U202015282 (lry89757@gmail.com)
 
 ## 遇到问题及解决方案
+* 参考博客：https://zhuanlan.zhihu.com/p/138448999
 * 使用./bomb出现错误：https://stackoverflow.com/questions/26436519/how-to-execute-the-cmu-binary-bomb-in-ubuntu-linux
     输入 `chmod +x bomb`就解决了。
 * 看objdump出来的代码经常看不懂，后来上网一查原来是有两种风格的反汇编，`objdump`处理的是默认AT&T格式的，而要转化为intel格式的需要设定`-M`参数为`objdump -d bomb -M intel | less`才行。

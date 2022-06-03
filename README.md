@@ -9,6 +9,8 @@ Our Computer System homework, about 3 labs
 
 # Lab01-handout
 
+[Lab02](./LAB1/lab1-handout/)
+
 * how to unzip:
   * tar -vxzf lab1-handout.gtar
 
@@ -21,3 +23,12 @@ Our Computer System homework, about 3 labs
 *  Makefile  生成btest、fshow、ishow 等工具的Make 文件。 
 *  ishow.c    整型数据表示查看工具 
 *  fshow.c    浮点数据表示查看工具
+
+# Lab02-Bomb A simple Intro
+
+[Lab02](./LAB2/U202015282/)
+
+bomb：是一个linux下可执行程序，需要0或1个命令行参数（详见 bomb.c源文件中的main()函数）。如果运行时不指定参数， 则该程序打印出欢迎信息后，期待你按行输入每一阶段用来 拆除炸弹的字符串，并根据你当前输入的字符串决定你是通 过相应阶段还是炸弹爆炸导致任务失败。
+bomb.c：bomb的主程序，但不是全部，这里面你看不到炸弹.
+
+

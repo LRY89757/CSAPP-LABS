@@ -56,5 +56,12 @@ string7
 0x804a004:      0x21776f57      0x61724220      0x206c697a      0x62207369
 0x804a014:      0x002e6769      0x00000000
 ```
+经过所写python脚本[ascii.py](./ascii.py)解密可得为：
+```sh
+Wow! Brazil is big.
+```
+调试过程如下：
+首先通过`objdump -d bomb -M intel | less > intel_asm.asm`来得到我们程序的intel格式的反汇编，然后首先寻找main函数中的phase_1，找到后:
+
 
 

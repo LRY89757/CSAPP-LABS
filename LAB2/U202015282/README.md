@@ -119,6 +119,49 @@ Wow! Brazil is big.
 <br>
 可以看出破译成功！
 
+## phase_3
+
+这个关卡首先仍然是找到反汇编对应的`phase_3`函数对应的位置：
+<br>
+![image](https://user-images.githubusercontent.com/77330637/172014003-9f627058-2d38-4a9b-a5df-e3aea03ac19e.png)
+<br>
+这里读取使用的是sscanf，同时这里使用的是`0x804aab7`为地址的字串，我们可以观察下该地址下的字符串的值是多少（使用gdb):
+<br>
+![image](https://user-images.githubusercontent.com/77330637/172014184-dc2673ea-1304-4643-8c0c-4487b923ade0.png)
+<br>
+可以判断出来这里需要我们输入两个整数。接下哎我们可以看到首先比较了第一个数和7的大小，如果比较大的话就直接bomb，如果比较小的话就跳转到其对应的一个变址+基址寻址的对应地址值：
+<br>
+![image](https://user-images.githubusercontent.com/77330637/172014467-b2a10f25-bf83-4a73-989f-a92dc00345c7.png)
+<br>
+接下来就需要进一步调用查看对应的地址值了：
+<br>
+![image](https://user-images.githubusercontent.com/77330637/172014761-97a3f583-4043-4a82-9f9e-7b3df343a176.png)
+<br>
+这里可以随机选定一个，比方说第四个`0x08048c28`,我们可以看到程序都运行了那些部分：
+<br>
+![image](https://user-images.githubusercontent.com/77330637/172015207-fd9a6664-51ae-4ee6-890d-474f126a286c.png)
+<br>
+就是以上箭头标出的那一部分，可以看出如果程序eax加减了多次之后还是0，然后对第一个数取出判断是否大于5，其实第一个数这里我们假定的就是4，然后判断第二个数是否等于eax，也就是0，等于就不bomb，这样一来我们就很容易知道答案是`4 0`，当然其他的组合也可能也成立，这里只是选择了这个：
+<br>
+![image](https://user-images.githubusercontent.com/77330637/172015375-4ac80af7-6641-46d0-9323-6990409da14a.png)
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

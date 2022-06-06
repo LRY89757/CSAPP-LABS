@@ -4,9 +4,8 @@ Our Computer System homework, about 3 labs
 * language: C
 * environment: Linux
 * reference codes: https://github.com/Sorosliu1029/CSAPP-Labs/tree/master/data-lab
-
-第一关教程请看这里：[bits.c](LAB1/lab1-handout/bits.c)
-第二关教程请看这里：[README](LAB2/U202015282/README.md)
+* 第一关教程请看这里：[bits.c](LAB1/lab1-handout/bits.c)
+* 第二关教程请看这里：[README](LAB2/U202015282/README.md)
 
 
 

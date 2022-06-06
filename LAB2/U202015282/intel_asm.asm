@@ -467,12 +467,12 @@ Disassembly of section .text:
  8048c8a:	57                   	push   edi
  8048c8b:	56                   	push   esi
  8048c8c:	53                   	push   ebx
- 8048c8d:	8b 5c 24 10          	mov    ebx,DWORD PTR [esp+0x10]
+ 8048c8d:	8b 5c 24 10          	mov    ebx,DWORD PTR [esp+0x10] ; 此时等于9
  8048c91:	8b 7c 24 14          	mov    edi,DWORD PTR [esp+0x14]
- 8048c95:	85 db                	test   ebx,ebx
+ 8048c95:	85 db                	test   ebx,ebx ; 
  8048c97:	7e 2b                	jle    8048cc4 <func4+0x3a>
  8048c99:	89 f8                	mov    eax,edi
- 8048c9b:	83 fb 01             	cmp    ebx,0x1
+ 8048c9b:	83 fb 01             	cmp    ebx,0x1  ; 看下面递归了这意思是ebx最后必须是1, eax需要时0.
  8048c9e:	74 29                	je     8048cc9 <func4+0x3f>
  8048ca0:	83 ec 08             	sub    esp,0x8
  8048ca3:	57                   	push   edi
@@ -507,16 +507,16 @@ Disassembly of section .text:
  8048ceb:	ff 74 24 2c          	push   DWORD PTR [esp+0x2c]
  8048cef:	e8 1c fb ff ff       	call   8048810 <__isoc99_sscanf@plt>
  8048cf4:	83 c4 10             	add    esp,0x10
- 8048cf7:	83 f8 02             	cmp    eax,0x2
+ 8048cf7:	83 f8 02             	cmp    eax,0x2 ; 看样子eax和0x2必须相等, 也就是读了俩数
  8048cfa:	75 0c                	jne    8048d08 <phase_4+0x3b>
  8048cfc:	8b 44 24 04          	mov    eax,DWORD PTR [esp+0x4]
- 8048d00:	83 e8 02             	sub    eax,0x2
- 8048d03:	83 f8 02             	cmp    eax,0x2
+ 8048d00:	83 e8 02             	sub    eax,0x2 ; 先建个2
+ 8048d03:	83 f8 02             	cmp    eax,0x2 ; 必须小于等于2
  8048d06:	76 05                	jbe    8048d0d <phase_4+0x40>
  8048d08:	e8 e1 03 00 00       	call   80490ee <explode_bomb>
- 8048d0d:	83 ec 08             	sub    esp,0x8
+ 8048d0d:	83 ec 08             	sub    esp,0x8 ; 这个是留出参数空间
  8048d10:	ff 74 24 0c          	push   DWORD PTR [esp+0xc]
- 8048d14:	6a 09                	push   0x9
+ 8048d14:	6a 09                	push   0x9 ; 把9也放了进去
  8048d16:	e8 6f ff ff ff       	call   8048c8a <func4>
  8048d1b:	83 c4 10             	add    esp,0x10
  8048d1e:	3b 44 24 08          	cmp    eax,DWORD PTR [esp+0x8]

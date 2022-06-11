@@ -585,8 +585,8 @@ Disassembly of section .text:
  8048deb:	83 c4 10             	add    esp,0x10
  8048dee:	be 00 00 00 00       	mov    esi,0x0
  8048df3:	8b 44 b4 0c          	mov    eax,DWORD PTR [esp+esi*4+0xc]
- 8048df7:	83 e8 01             	sub    eax,0x1
- 8048dfa:	83 f8 05             	cmp    eax,0x5
+ 8048df7:	83 e8 01             	sub    eax,0x1 ; 直接比不行？
+ 8048dfa:	83 f8 05             	cmp    eax,0x5 ; 这里暗示输入的每个数不能大于6
  8048dfd:	76 05                	jbe    8048e04 <phase_6+0x38>
  8048dff:	e8 ea 02 00 00       	call   80490ee <explode_bomb>
  8048e04:	83 c6 01             	add    esi,0x1
@@ -600,12 +600,12 @@ Disassembly of section .text:
  8048e1d:	83 c3 01             	add    ebx,0x1
  8048e20:	83 fb 05             	cmp    ebx,0x5
  8048e23:	7e e9                	jle    8048e0e <phase_6+0x42>
- 8048e25:	eb cc                	jmp    8048df3 <phase_6+0x27>
+ 8048e25:	eb cc                	jmp    8048df3 <phase_6+0x27>  ; 到此为止都是在要求输入的6个数不能一样
  8048e27:	8b 52 08             	mov    edx,DWORD PTR [edx+0x8]
  8048e2a:	83 c0 01             	add    eax,0x1
  8048e2d:	39 c8                	cmp    eax,ecx
- 8048e2f:	75 f6                	jne    8048e27 <phase_6+0x5b>
- 8048e31:	89 54 b4 24          	mov    DWORD PTR [esp+esi*4+0x24],edx
+ 8048e2f:	75 f6                	jne    8048e27 <phase_6+0x5b> ; 这个就是序号一直往后走直到找到对应的数为止，搜寻方式就是链表从头到尾找
+ 8048e31:	89 54 b4 24          	mov    DWORD PTR [esp+esi*4+0x24],edx ; 把第ecx个节点的地址放到数组第esi个位置
  8048e35:	83 c3 01             	add    ebx,0x1
  8048e38:	83 fb 06             	cmp    ebx,0x6
  8048e3b:	75 07                	jne    8048e44 <phase_6+0x78>
@@ -618,15 +618,15 @@ Disassembly of section .text:
  8048e54:	83 f9 01             	cmp    ecx,0x1
  8048e57:	7f ce                	jg     8048e27 <phase_6+0x5b>
  8048e59:	eb d6                	jmp    8048e31 <phase_6+0x65>
- 8048e5b:	8b 5c 24 24          	mov    ebx,DWORD PTR [esp+0x24]
+ 8048e5b:	8b 5c 24 24          	mov    ebx,DWORD PTR [esp+0x24] ; 存链表地址
  8048e5f:	8d 44 24 24          	lea    eax,[esp+0x24]
  8048e63:	8d 74 24 38          	lea    esi,[esp+0x38]
  8048e67:	89 d9                	mov    ecx,ebx
- 8048e69:	8b 50 04             	mov    edx,DWORD PTR [eax+0x4]
- 8048e6c:	89 51 08             	mov    DWORD PTR [ecx+0x8],edx
- 8048e6f:	83 c0 04             	add    eax,0x4
- 8048e72:	89 d1                	mov    ecx,edx
- 8048e74:	39 f0                	cmp    eax,esi
+ 8048e69:	8b 50 04             	mov    edx,DWORD PTR [eax+0x4] ; 得到下一条链表地址
+ 8048e6c:	89 51 08             	mov    DWORD PTR [ecx+0x8],edx ; 将该链表的指向地址改变为下一条链表
+ 8048e6f:	83 c0 04             	add    eax,0x4 ; 相当于链表往后循环，用于得到下一次循环的后一条应该指向的链表
+ 8048e72:	89 d1                	mov    ecx,edx ; 得到下一次循环的当前链表地址
+ 8048e74:	39 f0                	cmp    eax,esi ; 终止条件
  8048e76:	75 f1                	jne    8048e69 <phase_6+0x9d>
  8048e78:	c7 42 08 00 00 00 00 	mov    DWORD PTR [edx+0x8],0x0
  8048e7f:	be 05 00 00 00       	mov    esi,0x5

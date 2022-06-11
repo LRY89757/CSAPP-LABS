@@ -269,9 +269,11 @@ int parityCheck(int x) {
 int mul2OK(int x) {
   // 感觉就是判断最高的那两位是否相等? 
   // 太天真了。。 也可能是64位机器的问题。
-  int a = (x>>31)&0x1;
-  int b = (x>>30)&0x1;
-  return !(a ^ b);
+  // int a = (x>>31)&0x1;
+  // int b = (x>>30)&0x1;
+  // return !(a ^ b);
+  return (((x >> 31) & 1) ^ ((x >> 30) & 1)) ^ 1;
+
 }
 /*
  * mult3div2 - multiplies by 3/2 rounding toward 0,

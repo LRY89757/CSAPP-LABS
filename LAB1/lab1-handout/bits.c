@@ -273,7 +273,6 @@ int mul2OK(int x) {
   // int b = (x>>30)&0x1;
   // return !(a ^ b);
   return (((x >> 31) & 1) ^ ((x >> 30) & 1)) ^ 1;
-
 }
 /*
  * mult3div2 - multiplies by 3/2 rounding toward 0,

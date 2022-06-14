@@ -95,6 +95,35 @@ void test()
 
 ## fizz
 
+![image](https://user-images.githubusercontent.com/77330637/173591206-e6073318-3999-4ead-9903-9c76f69cf0bc.png)
+有图可知这里程序不同的一点是有一个参数传进来，同时只有当传进来的参数等于cookie，也就是我们需要将cookie作为参数传进来才可以正确攻击，我们很容易将学号输进去得到我们的cookie：
+![image](https://user-images.githubusercontent.com/77330637/173591647-52aa4ff8-5cf1-4414-b65f-984f166f31c7.png)
+接下来就只需要详细看看到底这个参数如何读取传递的，这需要我们阅读fizz源码：
+![image](https://user-images.githubusercontent.com/77330637/173592080-2b58ee4d-9f46-46b6-aa00-d16075038cf7.png)
+我们可以注意到实际上就是通过ebp+0x8来获取的参数，所以这里我们就需要画一下这里的堆栈关系了：
+![IMG_20220614_214918](https://user-images.githubusercontent.com/77330637/173593819-9027137b-0db2-4cc4-b49c-c22ea69d8778.jpg)
+可以看出这里需要填52个字节，因为我们还需要额外加一个参数，所以需要多覆盖4个字节来进行传递，这多出的4个字节用来存储cookie：
+![image](https://user-images.githubusercontent.com/77330637/173594145-ccc58edf-6a16-4243-b12f-0a3b5fb5033e.png)
+最后检查以下攻击结果：
+![image](https://user-images.githubusercontent.com/77330637/173594315-6fe36eaa-b75b-44c9-bb0b-6729263a7f91.png)
+可以看出攻击成功！
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## bang
 `gcc -m32 -c bang.s`

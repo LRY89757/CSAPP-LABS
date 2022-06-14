@@ -77,5 +77,20 @@ void test()
 }
 ```
 
+## smoke
+
+首先是观察getbuf函数发现函数本身空出了56个字节同时算上ebp的旧值一共六十个字节。同时这里将
+
+
+
+
+
+
+## fizz
+
+
+## bang
+`gcc -m32 -c bang.s`
+`objdump -d bang.o > bang_.asm`
 
 

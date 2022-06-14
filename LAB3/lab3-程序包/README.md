@@ -110,23 +110,26 @@ void test()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## bang
-`gcc -m32 -c bang.s`
-`objdump -d bang.o > bang_.asm`
 
+> 这道题真是蚌埠住，都怪我没认真学AT&T格式的汇编代码导致我debug一个错误debug了好长时间。。。。
+首先还是看下`bang`这个函数：
+![image](https://user-images.githubusercontent.com/77330637/173594879-d0ffca96-1232-48a5-b133-7d3537767e8b.png)
+可以看出这里虽然也传进去了一个参数，但是这里并没有使用这个参数，而是使用的全局的一个值来和cookie值比较大小，这样一来我们要想成功放入bang中那么我们就需要修改这个全局的值，我们通过查看bang的汇编源代码找到对应的地址:
+![image](https://user-images.githubusercontent.com/77330637/173596533-d90aa025-8569-4b5a-b889-06302d19f7ac.png)
+可以看出这里`global value`的地址为`0x804c218`, 而`cookie`的地址为`0x804c220`.我们需要更改`0x804c218`的地址的值为cookie的值，这样就需要我们嵌入一段汇编代码来完成这一件事，同时我们修改完global_value之后还需要写指令返回到bang函数这里。而我们这里就将指令存储到对应的字符串里面，而将getbuf函数返回值覆盖为字符串的首址，这样就可以执行我们对应的命令了，所以我们接下来还需要查看下字符串的首址是多少，还是看回getbuf源码：
+![image](https://user-images.githubusercontent.com/77330637/173599780-5a79ad0a-cc9e-476e-ba42-586e2a7da676.png)
+使用gdb运行程序然后再80491f5处设断点然后观察eax的值就是对应字符串的首址：
+![image](https://user-images.githubusercontent.com/77330637/173600348-dd7520f8-ea10-4195-b8fa-21d94e13540d.png)
+可以看到首址为`0x55682eb8`
+接下来要想得到我们对应的汇编机器指令代码，我们先把AT&T格式的汇编代码写好（试了试intel格式的好像编译没通过，估计要加额外的参数才行）：
+![image](https://user-images.githubusercontent.com/77330637/173599513-4b4eeeca-d26f-47b8-a713-42eae0062435.png)
+而后我们编译运行再反汇编：
+![image](https://user-images.githubusercontent.com/77330637/173601049-1bdb5e97-1959-42e8-bdbb-62f8a2387477.png)
+可以看到这里得到了对应的机器码，我们只需要在对应的`.txt`文件中开头写下对应得到的指令然后在最后的覆盖返回值部分写下字符串首址确保让我们输入的机器指令的到执行就行：
+![image](https://user-images.githubusercontent.com/77330637/173601739-3ff6994b-d599-4b20-8d50-f8629308429e.png)
+
+可以验证下我们得到的结果：
+![image](https://user-images.githubusercontent.com/77330637/173601877-a890725a-856e-49a9-b15a-f5a3bca3137d.png)
+可以发现攻击成功！
 

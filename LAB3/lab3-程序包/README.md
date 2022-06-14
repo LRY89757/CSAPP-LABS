@@ -2,6 +2,7 @@
 
 ## refer
 * https://cloud.tencent.com/developer/article/1826664
+* https://github.com/SSA2001/HUST_ICS
 
 ## dir
 * bufbomb：     可执行程序，攻击所用的目标程序bufbomb。
@@ -79,8 +80,14 @@ void test()
 
 ## smoke
 
-首先是观察getbuf函数发现函数本身空出了56个字节同时算上ebp的旧值一共六十个字节。同时这里将
-
+首先是观察getbuf函数发现函数本身空出了56个字节同时算上ebp的旧值一共六十个字节。同时我们可以发现这里空出40个字节供读取，我们攻击的思路就是填满这部分的同时溢出将自己smoke的地址溢出覆盖ebp旧值之前的返回地址：
+![image](https://user-images.githubusercontent.com/77330637/173588583-1f3fe345-6b63-4095-bf54-ee818a7498cf.png)
+也就是我们要填充一个48个字节的数，同时我们前44个字节就是固定的，但是第45-48个字节必须是smoke的地址，对应使用机器码存储，首先我们可以查看smoke函数得到函数对应的地址：
+![image](https://user-images.githubusercontent.com/77330637/173589262-b8a3dd30-7be6-4570-a2f3-888a6e389494.png)
+这样一来我们就可以直接将后四个字节填成地址`0x8048c90`的机器码格式`90 8c 04 08`：
+![image](https://user-images.githubusercontent.com/77330637/173589344-d6590eb9-ca70-42dd-8e9c-1838ea10d4cf.png)
+可以发现这样一来就成功攻击：
+![image](https://user-images.githubusercontent.com/77330637/173589669-74af026f-93ce-43de-812f-14277dc63cb1.png)
 
 
 

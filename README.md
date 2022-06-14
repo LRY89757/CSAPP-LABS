@@ -1,7 +1,7 @@
 # CSAPP-LABS
 Our Computer System homework, about 3 labs
 
-* language: C
+* language: C, Assembly, Machine codes
 * environment: Linux
 * reference codes: https://github.com/Sorosliu1029/CSAPP-Labs/tree/master/data-lab
 * 第一关教程请看这里：[bits.c](LAB1/lab1-handout/bits.c)

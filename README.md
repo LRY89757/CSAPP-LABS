@@ -12,7 +12,7 @@ Our Computer System homework, about 3 labs
 
 # Lab01-handout
 
-[Lab02](./LAB1/lab1-handout/)
+[Lab01](./LAB1/lab1-handout/)
 
 * how to unzip:
   * tar -vxzf lab1-handout.gtar
@@ -36,6 +36,9 @@ bomb.c：bomb的主程序，但不是全部，这里面你看不到炸弹.
 
 
 # Lab03-Attack A simple Intro
+
+[Lab03](./LAB3/lab3-%E7%A8%8B%E5%BA%8F%E5%8C%85/)
+
 > 缓冲区溢出攻击
 
 对一个可执行程序“bufbomb”实施一系列缓冲区溢出攻击（buffer overflow attacks），也就是设法通过造成缓冲区溢出来改变该可执行程序的运行内存映像，继而执行一些原来程序中没有的行为。 

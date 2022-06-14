@@ -137,6 +137,40 @@ void test()
 ## boom
 > 这道题首先我不知道还原任何被破坏的状态是什么意思，但是我觉得应该是完全恢复？但是首先我还是想先尝试一下可不可以就简单的更改eax然后直接返回到原来地址看下可不可以通过，其实这就是使用了类似第三关的思路，可以首先尝试一下是否能够正常攻击成功。
 
+这里首先还是查看test调用getbuf后的地址，不过我们稍后传入的应该是他之后的那一条指令的地址：
+![image](https://user-images.githubusercontent.com/77330637/173618638-76acc65d-0f48-42c7-887f-0398ed45fe12.png)
+我们这里可以使用gdb打断点调试一下看下到时候进入getbuf后我们得到的ebp旧值再往上的地址，也就是要正常返回的地址究竟是到底是多少，我们在`mov ebp, esp`之后设断点：
+![image](https://user-images.githubusercontent.com/77330637/173620034-ab28b1c5-35a8-4da2-94c7-d2f4c5aac74c.png)
+可以看到打了断点查看ebp+8对应位置的值，正好就是`0x08048e81`,也就是应该返回到的test函数的下一条指令的地址。这样一来就完全说得通了，我们到时候也直接返回到这里就行了。
+所以初步思路为仍然移入一个字符串，这个字符串包含我们攻击的机器指令，我们仍旧按照老方法来进行生成.s文件写入修改的指令：
+![image](https://user-images.githubusercontent.com/77330637/173625882-0425aa74-b2c4-42cd-8c5b-4bfcea2f0dc6.png)
+然后使用gcc编译后反汇编得到机器码：
+![image](https://user-images.githubusercontent.com/77330637/173626060-0dfd4ce0-6808-4a2c-88c9-4c7eb2bcf660.png)
+然后我们填入到对应的.txt文件中进行攻击:
+![image](https://user-images.githubusercontent.com/77330637/173626307-bd30312e-b09b-4832-9795-a28a7efba706.png)
+
+不出所料这个攻击结果失败了，看来还是有些东西没有考虑到：
+![image](https://user-images.githubusercontent.com/77330637/173625541-028f5654-f705-4013-8390-3a8bb2ec2a5f.png)
+我们可以一步一步设断点来分析程序的整个运行过程：
+首先还是先注入后查看对应的区域是否被修改，可以看出成功被修改：
+![image](https://user-images.githubusercontent.com/77330637/173626419-f9a94d84-0881-439e-9298-ea40a907cd3e.png)
+然后我们逐步执行对应的字符串命令：
+![image](https://user-images.githubusercontent.com/77330637/173626620-426deade-9012-4978-a512-1d8bb3204fe9.png)
+可以发现运行到结束一切正常，也就是正确的返回到了test函数的对应位置，那么接下来我们可以看下test函数对应位置的汇编代码：
+![image](https://user-images.githubusercontent.com/77330637/173626914-ea9c95b0-6f46-4d57-a132-14c3d5c7b711.png)
+我们可以发现这里使用到了ebp这个寄存器，我们知道我们传入的字符串将这个覆盖掉了，所以这里就出了挺大的问题，我们应该着手将这个解决了再说，也就是提前看下ebp旧值是多少，然后当作字符串参数覆盖的时候不要覆盖掉，这点很重要！
+首先查看ebp旧值是多少：
+![image](https://user-images.githubusercontent.com/77330637/173627639-11236475-8401-4c67-8e73-dbaaba89eac7.png)
+可以看出为`0x55682f10`,那么我们重新改一下我们的字符串，将这个数传进去：
+![image](https://user-images.githubusercontent.com/77330637/173627965-a7e61772-0b0b-4521-a6f5-76a2782e43ec.png)
+然后我们重新启动攻击：
+![image](https://user-images.githubusercontent.com/77330637/173627930-4ba3622e-27f2-49fb-b6d9-798f21926f4d.png)
+可以发现攻击成功！Boom!开香槟咯！
+
+
+
+
+
 
 
 

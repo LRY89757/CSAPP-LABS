@@ -184,12 +184,26 @@ void test()
 看着和test函数差不多?而后我们看看getbufn的反汇编代码：
 ![image](https://user-images.githubusercontent.com/77330637/173728995-ea181a62-628f-4e10-a198-454de9a182a6.png)
 这里正好有getbufn和getbuf的对比，实际上差不多，之不多这里多分配了一些字节，这里分配了520个字节用于填充字符串，如果我们要溢出的话恐怕需要填充更多的字符串。
+这里有一个问题在于ebp每一次的初值都不一样，也就是进入到getbufn中的时候，每一次的ebp都不一样，都是一个不固定的值，这就导致我们没有办法将一个固定的值填入以覆盖原来的ebp值达到相同的攻击效果，目前可行的一个解决方案是使用esp，也就是我们进入getbufn之前我们应该可以确定esp和对应的ebp应该是有一个固定的差值在，我们可以通过esp来确定ebp的旧值到底是多少，这个值当然不需要我们来观察testn函数来一个一个的计算，这个完全可以通过我们单步调试来完成计算，单步调试过程如下：
 
-
-
-
-
-
+![image](https://user-images.githubusercontent.com/77330637/173768226-78266f93-1c47-4e54-a4ba-6edf468b2e9d.png)
+经过这样几次调试我们可以发现这里ebp - esp = 0x30基本上就可以确定了，所以我们只需要将对应的位置写上将ebp赋给旧值就行，但是请注意这里是进入getbufn的时候的，等到返回的时候我们有8个字节没有算上所以我们需要加上这几个字节那么就变为ebp - esp = 0x28.
+接下来就只需要确定我们到底把攻击的字符串放到哪个地方就OK了，这是另一条需要格外注意的点，我们此时知道字符串首址也是不固定的，但是字符串却有重合的地址，那么我们就只需找到这五次运行过程中字符串首址最大的那个地址就OK，然后我们在低地址处全部填上nop就可以，这也是为什么这里一下子分配上百个字节的原因。
+我们仍然使用单步调试来观测字符串首址的最大值：
+![image](https://user-images.githubusercontent.com/77330637/173772985-a44bd65c-3428-4998-8390-c1ba986d89ca.png)
+可以看到字符串首址最大值为0x55682d08,然后这里我们就可以选择相应的攻击字符串来进行攻击了：
+首先确定对应的汇编代码：
+![image](https://user-images.githubusercontent.com/77330637/173785240-43756fb4-e0c4-4308-b385-a25e2e11576a.png)
+而后编译运行：
+![image](https://user-images.githubusercontent.com/77330637/173785300-78200116-3895-4e78-a058-8d27ae4dce36.png)
+得到对应反汇编机器码：
+![image](https://user-images.githubusercontent.com/77330637/173785922-78a2e2cb-92b4-4a30-9d69-7e4833593119.png)
+然后我们打开.txt文件写入对应的机器字符串：
+![image](https://user-images.githubusercontent.com/77330637/173786114-1b797c1c-e2ab-4e05-a2e5-120b6da5d5df.png)
+接着就运行：
+![image](https://user-images.githubusercontent.com/77330637/173786410-7abea8cf-2827-4137-9949-bc8ff5674d72.png)
+可以发现攻击成功！
+至此整个lab03完成。
 
 
 

@@ -754,8 +754,8 @@ Disassembly of section .text:
 08049204 <getbufn>:
  8049204:	55                   	push   ebp
  8049205:	89 e5                	mov    ebp,esp
- 8049207:	81 ec 18 02 00 00    	sub    esp,0x218
- 804920d:	8d 85 f8 fd ff ff    	lea    eax,[ebp-0x208]
+ 8049207:	81 ec 18 02 00 00    	sub    esp,0x218 ; 往下空出536个字节？
+ 804920d:	8d 85 f8 fd ff ff    	lea    eax,[ebp-0x208] ; 520个字节存字符串
  8049213:	89 04 24             	mov    DWORD PTR [esp],eax
  8049216:	e8 37 fb ff ff       	call   8048d52 <Gets>
  804921b:	b8 01 00 00 00       	mov    eax,0x1

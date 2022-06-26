@@ -225,7 +225,33 @@ Wow! Brazil is big.
 
 ## secret_phase
 
-听同学介绍还有个隐藏关在，这个确实没有想到，原来在第四关留有后门，
+PPT上介绍还有个隐藏关在，听同学说在第四关留有后门，函数名称叫做secret_phase，我们可以搜索搜到secret_phase,而后我们可以继续搜发现phase_defused调用了我们的函数，而后我们打断点在phase处进一步查看对应的值：
+![image](https://user-images.githubusercontent.com/77330637/175802874-80af3bd0-32c1-4282-8098-443c8449cb2d.png)
+可以发现这里使用了0x8049263 将 sscanf 函数的返回值与 3 比较，也就是当输入有 3 个参数的时候才会继续往下走，然后把第三个参数也即一个字符串和 DrEvil 作比较，如果相等
+的话就会输出余下的几个字符串，然后调用 secret_phase，另外考虑到 0x804a1c9这个地址的串的值，结合在源代码中每个 phase之后都会调用一个phase_defused，
+可以认为我们需要在那些输入为两个整数的关卡后面加字符串 DrEvil 来触发隐藏关，然后我们在 sscanf 函数上面打断点，发现只有在第四关的时候才会运行到sscanf 函数这一行，所以我们只需要在第四关的输入后面再加一个 DrEvil就可以进入对应的隐藏关卡：
+![image](https://user-images.githubusercontent.com/77330637/175802931-9ca16500-b890-4eee-92fb-1a0188db349b.png)
+然后我们可以进一步分析对应的secret_phase查看对应的代码，首先查看对应的输入：
+![image](https://user-images.githubusercontent.com/77330637/175803260-3c4ebdce-07aa-42d1-8964-d0e100b2d6c8.png)
+我们可以发现这里输入了一个小于等于1001的一个数，首先我们从这里可以看出是一个数，接着我们继续查看调用的接口以及对应的代码：
+![image](https://user-images.githubusercontent.com/77330637/175803848-eba1dc1d-9da4-4b6b-8cc7-a46728ba09af.png)
+可以看到调用了fun7然后判断了返回值，这里可以确定返回值必须是0x2，否则就爆炸，所以我们这里确定fun7需要返回2.这里同样可以看到函数传参的时候想fun7传入了一个地址804c088，这个地址我们可以进一步查看一下该地址附近对应的值：
+![image](https://user-images.githubusercontent.com/77330637/175804008-dffcac84-8dfa-4bc0-9585-30e8ba7230f6.png)
+这里我们先前已经写过第六关，我们这里知道这些数据为链表节点，我们可以进一步判断出这里更为具体的逻辑是什么，这就需要进一步查看我们fun7的逻辑：
+![image](https://user-images.githubusercontent.com/77330637/175805063-74e50354-9265-4b3e-9556-3dc2d11af242.png)
+可以看出来这个还是非常复杂的，至少很多递归的传递，我们经过分析可以发现这是一颗二叉树，我们可以详细画出对应数据的值就可以看出一些逻辑：
+![image](https://user-images.githubusercontent.com/77330637/175804502-7af5ebe1-d1ab-454a-8f8d-1b0fb95b9c73.png)
+进一步的我们可以画出对应的图：
+![IMG_20220626_155801](https://user-images.githubusercontent.com/77330637/175805185-9236e1a2-72a6-4e0e-9300-91208f1922e2.jpg)
+由此我们容易得出我们需要输入22才能返回相应的值2，所以这里应该输入22，我们可以带入程序验证一下：
+![image](https://user-images.githubusercontent.com/77330637/175805220-d9cda2f8-f2cf-4c94-a377-105a2fb2bfcc.png)
+成功通过！至此整个lab02算是彻底做完了！
+
+
+
+
+
+
 
 
 

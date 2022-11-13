@@ -123,6 +123,9 @@ void test()
 ![image](https://user-images.githubusercontent.com/77330637/173600348-dd7520f8-ea10-4195-b8fa-21d94e13540d.png)
 可以看到首址为`0x55682eb8`
 接下来要想得到我们对应的汇编机器指令代码，我们先把AT&T格式的汇编代码写好（试了试intel格式的好像编译没通过，估计要加额外的参数才行）：
+<br>
+2022.11.13前来考古，这里如果要写intel格式汇编并让gcc进行编译的话，请在汇编代码最开始位置加一个`.intel_syntax noprefix`,实测可以让gcc成功编译
+<br>
 ![image](https://user-images.githubusercontent.com/77330637/173599513-4b4eeeca-d26f-47b8-a713-42eae0062435.png)
 而后我们编译运行再反汇编：
 ![image](https://user-images.githubusercontent.com/77330637/173601049-1bdb5e97-1959-42e8-bdbb-62f8a2387477.png)
